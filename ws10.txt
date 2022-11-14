@@ -1,0 +1,61 @@
+I think python runs faster on the same input file because it is more directly to execute the arguments.
+
+
+
+Script started on 2022-11-14 00:45:27-05:00[guoman@sjsu ~]$ cat amazon_reviews_us_Books_v1_02.tsv|cut -f 1,9|tail -100 >numbers.txt
+[guoman@sjsu ~]$ time python3 numbers.py 
+min 0 max 45 avg 4.848484848484849
+
+real	0m0.022s
+user	0m0.022s
+sys	0m0.000s
+[guoman@sjsu ~]$ vi numbers.sh
+[guoman@sjsu ~]$ cat numbers.sh
+#!/bin/bash
+
+count=0;
+total=0; 
+max=0;
+smallest=0;
+for i in $( awk '{ print $2 }' numbers.txt )
+do
+	
+	if [ $(bc <<< "$i > $max") == 1 ];
+	then
+		max=$i
+	fi
+done
+echo $max
+for i in $( awk '{ print $2 }' numbers.txt ) 
+do
+	if [ $i -lt $smallest ] ;
+       	then
+	    smallest=$i
+   fi
+done
+echo $smallest
+
+for i in $( awk '{ print $2 }' numbers.txt )
+
+do
+	total=$((total+i)) 
+          #count=$((count + 1))
+	 (( count++ ))
+   done
+   echo "scale=2; $total / $count" | bc
+  
+[guoman@sjsu ~]$ time ./numbers.sh
+45
+0
+4.82
+
+real	0m0.202s
+user	0m0.177s
+sys	0m0.036s
+
+
+[guoman@sjsu ~]$ exit
+
+Script done on 2022-11-14 00:53:32-05:00
+
+
